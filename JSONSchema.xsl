@@ -20,7 +20,9 @@
     "title": "<xsl:value-of  select="@name"/>",
   "type": "object",
    "properties": {
-        <xsl:call-template name="message-definition"/>
+        "Header":{"$ref":"#/$defs/header"},
+        <xsl:call-template name="message-definition"/>,
+        "Trailer":{"$ref":"#/$defs/trailer"}
   } 
   }
   <xsl:if test="position() != last()">,</xsl:if>
@@ -31,6 +33,21 @@
     <!-- ############ Define fields ############### -->
     <xsl:for-each select="/fix/fields/field"><xsl:call-template name="field-definition"/><xsl:if test="position() != last()"></xsl:if>,
     </xsl:for-each>
+
+
+    <xsl:for-each select="/fix/header|/fix/trailer">
+      "<xsl:value-of select="name()"/>": {
+        "type": "object",
+        "properties": {
+          <xsl:for-each select="field|group|component">
+              <xsl:call-template name="object-definition"/> 
+            <xsl:if test="position() != last()">,</xsl:if>
+          </xsl:for-each>
+        }
+      }     
+      <xsl:if test="position() != last()">,
+      </xsl:if>
+    </xsl:for-each>,
 
     <!-- ############ Define components ############# -->
     <xsl:for-each select="/fix/components/component">
@@ -46,6 +63,8 @@
       <xsl:if test="position() != last()">,
       </xsl:if>
     </xsl:for-each>
+
+
   }
   
   }
