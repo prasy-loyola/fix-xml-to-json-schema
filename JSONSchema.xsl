@@ -13,14 +13,20 @@
   <xsl:template match="fix">{
   "$id": "https://fix.protocol/schemas/messages",
 
+  "oneOf" : [
+  <!-- Only showing selected message types -->
+  <xsl:for-each select="/fix/messages/message[@name='QuoteRequest' or @name='NewOrderSingle' or @name='NewOrderMultileg']">
+  {
+    "title": "<xsl:value-of  select="@name"/>",
   "type": "object",
    "properties": {
-    <xsl:for-each select="/fix/messages/message[@name='QuoteRequest']/field|/fix/messages/message[@name='QuoteRequest']/group|/fix/messages/message[@name='QuoteRequest']/component">
-        <xsl:call-template name="object-definition"/>
-      <xsl:if test="position() != last()">,
-      </xsl:if>
-    </xsl:for-each>
-  },
+        <xsl:call-template name="message-definition"/>
+  } 
+  }
+  <xsl:if test="position() != last()">,</xsl:if>
+  </xsl:for-each> 
+  ],
+
   "$defs": {
     <!-- ############ Define fields ############### -->
     <xsl:for-each select="/fix/fields/field"><xsl:call-template name="field-definition"/><xsl:if test="position() != last()"></xsl:if>,
@@ -44,6 +50,17 @@
   
   }
   </xsl:template>
+
+
+<!-- ################# Message definition ##############-->
+<xsl:template name="message-definition">
+
+    <xsl:for-each select="field|group|component">
+        <xsl:call-template name="object-definition"/>
+      <xsl:if test="position() != last()">,
+      </xsl:if>
+    </xsl:for-each>
+</xsl:template>
 
 
 <!--  ############## Object definition ################-->
