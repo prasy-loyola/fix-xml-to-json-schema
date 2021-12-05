@@ -38,6 +38,7 @@
     <xsl:for-each select="/fix/header|/fix/trailer">
       "<xsl:value-of select="name()"/>": {
         "type": "object",
+        "required": [<xsl:call-template name="required-definition"/>],
         "properties": {
           <xsl:for-each select="field|group|component">
               <xsl:call-template name="object-definition"/> 
@@ -53,6 +54,7 @@
     <xsl:for-each select="/fix/components/component">
       "<xsl:value-of select="@name"/>": {
         "type": "object",
+        "required": [<xsl:call-template name="required-definition"/>],
         "properties": {
           <xsl:for-each select="field|group|component">
               <xsl:call-template name="object-definition"/> 
@@ -99,6 +101,7 @@
     "type": "array",
     "items": {
         "type": "object",
+        "required": [<xsl:call-template name="required-definition"/>],
         "properties": {
         <xsl:for-each select="field|group|component">
           <xsl:call-template name="object-definition"/>
@@ -110,6 +113,17 @@
   }
 </xsl:template>
 
+
+<!-- ######### Required definition -->
+
+<xsl:template name="required-definition">
+
+<xsl:for-each select="field[@required='Y']|group[@required='Y']|component[@required='Y']">
+  "<xsl:value-of select="@name"/>" <xsl:if test="position() != last()">,
+        </xsl:if>
+</xsl:for-each>
+
+</xsl:template>
 
 <!-- ########### Field definintion template -->
   <xsl:template name="field-definition">"<xsl:value-of select="@name"/>": { 
