@@ -94,7 +94,9 @@
 
 <!-- ########### Field definintion template -->
   <xsl:template name="field-definition">"<xsl:value-of select="@name"/>": { 
-    "type": "<xsl:call-template name="get-field-type"/>" 
+    "type": "<xsl:call-template name="get-field-type"/>",
+    "tag" : <xsl:value-of select="@number"/>
+
     <xsl:if test="value">,
     "enum":[<xsl:call-template name="values-enum"/>] ,
     "enumNames":[<xsl:call-template name="values-enumNames"/>] 
