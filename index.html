@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+async function loadXMLDoc(filename)
+{
+    let data = await fetch(filename);
+    let parser = new DOMParser();
+    let text = await data.text();
+    
+    xmlDoc = parser.parseFromString(text ,"text/xml"); 
+    return xmlDoc;
+}
+
+async function displayResult()
+{
+xml =  await loadXMLDoc("FIX44.xml");
+xsl = await loadXMLDoc("JSONSchema.xsl");
+
+// code for Chrome, Firefox, Opera, etc.
+ if (document.implementation && document.implementation.createDocument)
+  {
+  xsltProcessor = new XSLTProcessor();
+  xsltProcessor.importStylesheet(xsl);
+  resultDocument = xsltProcessor.transformToFragment(xml, document);
+  let schema = JSON.parse(resultDocument.textContent);
+  console.log(schema);
+  resultDocument = JSON.stringify(schema, null, 2);
+  document.getElementById("example").innerHTML = resultDocument;
+  }
+}
+</script>
+</head>
+<body onload="displayResult()">
+<pre id="example" />
+</body>
+</html>
